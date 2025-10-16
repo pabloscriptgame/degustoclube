@@ -1,34 +1,44 @@
 <script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+
+    function filledCell(cell) {
+        return cell !== '' && cell != null;
+    }
+
+    function loadFileData(filename) {
         if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
             try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var workbook = XLSX.read(gk_fileData[filename], {
+                    type: 'base64'
+                });
                 var firstSheetName = workbook.SheetNames[0];
                 var worksheet = workbook.Sheets[firstSheetName];
 
                 // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, {
+                    header: 1,
+                    blankrows: false,
+                    defval: ''
+                });
                 // Filter out blank rows (rows where all cells are empty, null, or undefined)
                 var filteredData = jsonData.filter(row => row.some(filledCell));
 
                 // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
                 var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                    row.filter(filledCell).length >= filteredData[index + 1] ? .filter(filledCell).length
                 );
                 // Fallback
                 if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
+                    headerRowIndex = 0;
                 }
 
                 // Convert filtered JSON back to CSV
                 var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                csv = XLSX.utils.sheet_to_csv(csv, {
+                    header: 1
+                });
                 return csv;
             } catch (e) {
                 console.error(e);
@@ -36,9 +46,11 @@
             }
         }
         return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+    }
+</script>
+<!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +59,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://i.ibb.co/dwtWsHQ6/favicon-32x32.png" type="image/png">
 </head>
+
 <body>
     <header>
         <div class="header-container">
@@ -66,78 +79,13 @@
             <p>Score: <span id="trivia-score">0</span></p>
             <button class="clube-button" onclick="startTrivia()">Jogar</button>
         </div>
-        <div class="code-box">
-            <h3>Código Fonte</h3>
-            <button class="clube-button" onclick="copyCode()">Copiar Código</button>
-            <pre id="code-content">
-&lt;div id="trivia-question"&gt;&lt;/div&gt;
-&lt;div id="trivia-options"&gt;&lt;/div&gt;
-&lt;p&gt;Score: &lt;span id="trivia-score"&gt;0&lt;/span&gt;&lt;/p&gt;
-&lt;button class="clube-button" onclick="startTrivia()"&gt;Jogar&lt;/button&gt;
-
-&lt;script&gt;
-const triviaQuestions = [
-    {
-        question: 'Qual é o ingrediente principal do X-COSTELA?',
-        options: ['Costela desfiada', 'Tilápia', 'Goiabada', 'Frango'],
-        answer: 'Costela desfiada'
-    },
-    {
-        question: 'Qual molho é exclusivo da DêGusto?',
-        options: ['Barbecue', 'Goiabada', 'Maionese', 'Ketchup'],
-        answer: 'Goiabada'
-    },
-    {
-        question: 'Quantos hambúrgueres tem o X-DOBRO PODEROSO?',
-        options: ['1', '2', '3', '4'],
-        answer: '2'
-    }
-];
-let currentQuestion = 0;
-let triviaScore = 0;
-
-function startTrivia() {
-    currentQuestion = 0;
-    triviaScore = 0;
-    document.getElementById('trivia-score').textContent = triviaScore;
-    loadTriviaQuestion();
-}
-
-function loadTriviaQuestion() {
-    const q = triviaQuestions[currentQuestion];
-    document.getElementById('trivia-question').textContent = q.question;
-    document.getElementById('trivia-options').innerHTML = q.options.map((opt, i) => 
-        `&lt;label&gt;&lt;input type="radio" name="trivia" value="${opt}"&gt;${opt}&lt;/label&gt;`
-    ).join('&lt;br&gt;') + '&lt;br&gt;&lt;button class="clube-button" onclick="checkTrivia()"&gt;Responder&lt;/button&gt;';
-}
-
-function checkTrivia() {
-    const selected = document.querySelector('input[name="trivia"]:checked');
-    if (!selected) {
-        alert('Selecione uma opção!');
-        return;
-    }
-    if (selected.value === triviaQuestions[currentQuestion].answer) {
-        triviaScore += 10;
-        earnDeCoins(5);
-        document.getElementById('trivia-score').textContent = triviaScore;
-    }
-    currentQuestion++;
-    if (currentQuestion < triviaQuestions.length) {
-        loadTriviaQuestion();
-    } else {
-        alert('Trivia concluída! Pontuação: ' + triviaScore);
-    }
-}
-
-function earnDeCoins(amount) {
-    let balance = parseInt(localStorage.getItem('decoins')) || 0;
-    balance += amount;
-    localStorage.setItem('decoins', balance);
-}
-&lt;/script&gt;
-            </pre>
+        </pre>
         </div>
+    
+        <div style="text-align:center; margin-top:20px;">
+            <button class="clube-button" onclick="window.location.href='index.html'">⬅️ Voltar ao Início</button>
+        </div>
+
     </section>
 
     <footer>
@@ -146,4 +94,5 @@ function earnDeCoins(amount) {
 
     <script src="burger-trivia.js"></script>
 </body>
+
 </html>

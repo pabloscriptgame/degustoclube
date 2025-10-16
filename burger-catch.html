@@ -1,34 +1,44 @@
 <script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+
+    function filledCell(cell) {
+        return cell !== '' && cell != null;
+    }
+
+    function loadFileData(filename) {
         if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
             try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var workbook = XLSX.read(gk_fileData[filename], {
+                    type: 'base64'
+                });
                 var firstSheetName = workbook.SheetNames[0];
                 var worksheet = workbook.Sheets[firstSheetName];
 
                 // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, {
+                    header: 1,
+                    blankrows: false,
+                    defval: ''
+                });
                 // Filter out blank rows (rows where all cells are empty, null, or undefined)
                 var filteredData = jsonData.filter(row => row.some(filledCell));
 
                 // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
                 var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                    row.filter(filledCell).length >= filteredData[index + 1] ? .filter(filledCell).length
                 );
                 // Fallback
                 if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
+                    headerRowIndex = 0;
                 }
 
                 // Convert filtered JSON back to CSV
                 var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                csv = XLSX.utils.sheet_to_csv(csv, {
+                    header: 1
+                });
                 return csv;
             } catch (e) {
                 console.error(e);
@@ -36,9 +46,11 @@
             }
         }
         return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+    }
+</script>
+<!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +59,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://i.ibb.co/dwtWsHQ6/favicon-32x32.png" type="image/png">
 </head>
+
 <body>
     <header>
         <div class="header-container">
@@ -65,102 +78,13 @@
             <p>Score: <span id="catch-score">0</span></p>
             <button class="clube-button" onclick="startBurgerCatch()">Jogar</button>
         </div>
-        <div class="code-box">
-            <h3>Código Fonte</h3>
-            <button class="clube-button" onclick="copyCode()">Copiar Código</button>
-            <pre id="code-content">
-&lt;canvas id="burger-catch" width="300" height="300"&gt;&lt;/canvas&gt;
-&lt;p&gt;Score: &lt;span id="catch-score"&gt;0&lt;/span&gt;&lt;/p&gt;
-&lt;button class="clube-button" onclick="startBurgerCatch()"&gt;Jogar&lt;/button&gt;
-
-&lt;script&gt;
-let catchGameRunning = false;
-let catchScore = 0;
-let playerX = 130;
-const canvas = document.getElementById('burger-catch');
-const ctx = canvas.getContext('2d');
-const ingredients = [
-    { emoji: '🍔', points: 10 },
-    { emoji: '🥓', points: 15 },
-    { emoji: '🧀', points: 20 },
-    { emoji: '💣', points: -50 }
-];
-let fallingItems = [];
-
-function startBurgerCatch() {
-    if (catchGameRunning) return;
-    catchGameRunning = true;
-    catchScore = 0;
-    playerX = 130;
-    fallingItems = [];
-    document.getElementById('catch-score').textContent = catchScore;
-    document.addEventListener('keydown', movePlayer);
-    canvas.addEventListener('touchstart', handleTouch);
-    spawnItem();
-    gameLoop();
-}
-
-function movePlayer(e) {
-    if (e.key === 'ArrowLeft' && playerX > 0) playerX -= 10;
-    if (e.key === 'ArrowRight' && playerX < canvas.width - 40) playerX += 10;
-}
-
-function handleTouch(e) {
-    if (!catchGameRunning) return;
-    e.preventDefault();
-    const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-    if (touchX < canvas.width / 2 && playerX > 0) {
-        playerX -= 20;
-    } else if (touchX >= canvas.width / 2 && playerX < canvas.width - 40) {
-        playerX += 20;
-    }
-}
-
-function spawnItem() {
-    if (!catchGameRunning) return;
-    const item = ingredients[Math.floor(Math.random() * ingredients.length)];
-    fallingItems.push({ x: Math.random() * (canvas.width - 30), y: 0, item });
-    setTimeout(spawnItem, 1000);
-}
-
-function gameLoop() {
-    if (!catchGameRunning) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#ff007a';
-    ctx.fillRect(playerX, canvas.height - 20, 40, 20);
-    fallingItems = fallingItems.filter(item => item.y < canvas.height);
-    fallingItems.forEach(item => {
-        item.y += 2;
-        ctx.font = '20px Arial';
-        ctx.fillText(item.item.emoji, item.x, item.y);
-        if (item.y > canvas.height - 30 && item.x > playerX - 30 && item.x < playerX + 50) {
-            catchScore += item.item.points;
-            fallingItems = fallingItems.filter(i => i !== item);
-            document.getElementById('catch-score').textContent = catchScore;
-            if (catchScore >= 500) {
-                earnDeCoins(50);
-                alert('Parabéns! +50 DêCoins por atingir 500 pontos!');
-            }
-        }
-    });
-    if (catchScore < 0) {
-        catchGameRunning = false;
-        alert('Game Over! Pontuação: ' + catchScore);
-        document.removeEventListener('keydown', movePlayer);
-        canvas.removeEventListener('touchstart', handleTouch);
-        return;
-    }
-    requestAnimationFrame(gameLoop);
-}
-
-function earnDeCoins(amount) {
-    let balance = parseInt(localStorage.getItem('decoins')) || 0;
-    balance += amount;
-    localStorage.setItem('decoins', balance);
-}
-&lt;/script&gt;
-            </pre>
+        </pre>
         </div>
+    
+        <div style="text-align:center; margin-top:20px;">
+            <button class="clube-button" onclick="window.location.href='index.html'">⬅️ Voltar ao Início</button>
+        </div>
+
     </section>
 
     <footer>
@@ -169,4 +93,5 @@ function earnDeCoins(amount) {
 
     <script src="burger-catch.js"></script>
 </body>
+
 </html>
