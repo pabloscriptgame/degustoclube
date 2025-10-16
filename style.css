@@ -1,8 +1,8 @@
 :root {
+    --logo-orange: #FF8C00;
+    --logo-red: #DC143C;
+    --logo-yellow: #FFD700;
     --primary-black: #000000;
-    --accent-pink: #FF69B4;
-    --accent-orange: #FFA500;
-    --accent-blue: #4169E1;
     --dark-bg: #000000;
     --dark-gray: #111111;
     --light-text: #ffffff;
@@ -30,13 +30,13 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5), 0 0 10px var(--accent-orange);
-    border-bottom: 1px solid var(--accent-orange);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5), 0 0 10px var(--logo-orange);
+    border-bottom: 1px solid var(--logo-orange);
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 header:hover {
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6), 0 0 15px var(--accent-orange);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6), 0 0 15px var(--logo-orange);
     transform: translateY(-1px);
 }
 
@@ -62,8 +62,8 @@ header:hover {
 
 .logo h1 {
     font-size: 24px;
-    color: var(--accent-orange);
-    text-shadow: 0 0 5px var(--accent-orange);
+    color: var(--logo-orange);
+    text-shadow: 0 0 5px var(--logo-orange);
     margin: 0;
 }
 
@@ -75,9 +75,9 @@ header:hover {
 
 .clube-section h2 {
     font-size: 28px;
-    color: var(--accent-pink);
+    color: var(--logo-red);
     margin-bottom: 20px;
-    text-shadow: 0 0 10px var(--accent-pink);
+    text-shadow: 0 0 10px var(--logo-red);
 }
 
 .clube-description {
@@ -96,7 +96,7 @@ header:hover {
 
 .tab-button {
     background: rgba(0, 0, 0, 0.7);
-    border: 2px solid var(--accent-blue);
+    border: 2px solid var(--logo-yellow);
     color: var(--light-text);
     padding: 10px 20px;
     border-radius: 20px;
@@ -107,9 +107,9 @@ header:hover {
 
 .tab-button.active,
 .tab-button:hover {
-    background: var(--accent-blue);
+    background: var(--logo-yellow);
     color: var(--primary-black);
-    box-shadow: 0 0 15px var(--accent-blue);
+    box-shadow: 0 0 15px var(--logo-yellow);
 }
 
 .tab-panel {
@@ -119,8 +119,8 @@ header:hover {
     border-radius: 15px;
     max-width: 600px;
     margin: 0 auto;
-    border: 2px solid var(--accent-pink);
-    box-shadow: 0 0 15px var(--accent-pink);
+    border: 2px solid var(--logo-red);
+    box-shadow: 0 0 15px var(--logo-red);
 }
 
 .tab-panel.active {
@@ -128,7 +128,7 @@ header:hover {
 }
 
 .clube-button {
-    background: linear-gradient(135deg, var(--accent-pink), var(--accent-orange));
+    background: linear-gradient(135deg, var(--logo-red), var(--logo-orange));
     color: var(--primary-black);
     border: none;
     padding: 10px 20px;
@@ -136,7 +136,7 @@ header:hover {
     cursor: pointer;
     font-size: 14px;
     margin: 10px 0;
-    box-shadow: 0 0 10px var(--accent-orange);
+    box-shadow: 0 0 10px var(--logo-orange);
     transition: all 0.3s;
 }
 
@@ -154,14 +154,14 @@ input {
     font-size: 14px;
     background: rgba(0, 0, 0, 0.8);
     color: var(--light-text);
-    border: 1px solid var(--accent-orange);
-    box-shadow: 0 0 5px rgba(255, 165, 0, 0.3);
+    border: 1px solid var(--logo-orange);
+    box-shadow: 0 0 5px rgba(255, 140, 0, 0.3);
     transition: all 0.3s ease;
 }
 
 input:focus {
-    border-color: var(--accent-orange);
-    box-shadow: 0 0 10px var(--accent-orange);
+    border-color: var(--logo-orange);
+    box-shadow: 0 0 10px var(--logo-orange);
     outline: none;
 }
 
@@ -171,9 +171,30 @@ footer {
     background: rgba(0, 0, 0, 0.9);
     font-size: 14px;
     color: var(--light-text);
-    border-top: 2px solid var(--accent-orange);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 15px var(--accent-orange);
-    text-shadow: 0 0 5px var(--accent-orange);
+    border-top: 2px solid var(--logo-orange);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 15px var(--logo-orange);
+    text-shadow: 0 0 5px var(--logo-orange);
+}
+
+.back-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: var(--logo-red);
+    color: var(--light-text);
+    padding: 8px 12px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 12px;
+    box-shadow: 0 0 10px var(--logo-red);
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.back-button:hover {
+    background: var(--logo-orange);
+    box-shadow: 0 0 15px var(--logo-orange);
+    transform: scale(1.05);
 }
 
 @media (max-width: 600px) {
@@ -181,12 +202,10 @@ footer {
         flex-direction: column;
         gap: 5px;
     }
-
     .tab-button {
         width: 100%;
         max-width: 300px;
     }
-
     .tab-panel {
         padding: 15px;
     }
