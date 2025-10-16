@@ -1,10 +1,15 @@
-```css
 :root {
-    --primary-black: #111111;
-    --accent-pink: #ff007a;
-    --accent-orange: #ff6b00;
-    --success-green: #00cc00;
+    --primary-black: #000000;
+    --accent-pink: #FF69B4;
+    --accent-orange: #FFA500;
+    --accent-blue: #4169E1;
+    --primary-red: #e63946;
+    --dark-bg: #000000;
+    --dark-gray: #111111;
+    --light-text: #ffffff;
     --medium-text: #cccccc;
+    --success-green: #4caf50;
+    --muted: #cccccc;
 }
 
 * {
@@ -15,8 +20,10 @@
 }
 
 body {
-    background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
-    color: var(--medium-text);
+    background: linear-gradient(135deg, var(--dark-bg), var(--dark-gray));
+    color: var(--light-text);
+    line-height: 1.6;
+    font-size: 16px;
 }
 
 header {
@@ -25,6 +32,14 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5), 0 0 10px var(--accent-orange);
+    border-bottom: 1px solid var(--accent-orange);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+header:hover {
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6), 0 0 15px var(--accent-orange);
+    transform: translateY(-1px);
 }
 
 .header-container {
@@ -44,27 +59,33 @@ header {
 
 .logo img {
     height: 40px;
+    width: auto;
 }
 
 .logo h1 {
     font-size: 24px;
-    color: var(--accent-pink);
+    color: var(--accent-orange);
+    text-shadow: 0 0 5px var(--accent-orange);
+    margin: 0;
 }
 
 .clube-section {
     padding: 40px 10px;
     text-align: center;
+    background: rgba(0, 0, 0, 0.6);
 }
 
 .clube-section h2 {
     font-size: 28px;
     color: var(--accent-pink);
     margin-bottom: 20px;
+    text-shadow: 0 0 10px var(--accent-pink);
 }
 
 .clube-description {
     font-size: 16px;
     margin-bottom: 20px;
+    color: var(--medium-text);
 }
 
 .tabs {
@@ -77,8 +98,8 @@ header {
 
 .tab-button {
     background: rgba(0, 0, 0, 0.7);
-    border: 2px solid var(--accent-pink);
-    color: var(--medium-text);
+    border: 2px solid var(--accent-blue);
+    color: var(--light-text);
     padding: 10px 20px;
     border-radius: 20px;
     cursor: pointer;
@@ -86,9 +107,11 @@ header {
     transition: all 0.3s;
 }
 
-.tab-button.active, .tab-button:hover {
-    background: var(--accent-pink);
-    color: #fff;
+.tab-button.active,
+.tab-button:hover {
+    background: var(--accent-blue);
+    color: var(--primary-black);
+    box-shadow: 0 0 15px var(--accent-blue);
 }
 
 .tab-panel {
@@ -99,6 +122,7 @@ header {
     max-width: 600px;
     margin: 0 auto;
     border: 2px solid var(--accent-pink);
+    box-shadow: 0 0 15px var(--accent-pink);
 }
 
 .tab-panel.active {
@@ -107,17 +131,21 @@ header {
 
 .clube-button {
     background: linear-gradient(135deg, var(--accent-pink), var(--accent-orange));
-    color: #fff;
+    color: var(--primary-black);
     border: none;
     padding: 10px 20px;
     border-radius: 20px;
     cursor: pointer;
     font-size: 14px;
     margin: 10px 0;
+    box-shadow: 0 0 10px var(--accent-orange);
+    transition: all 0.3s;
 }
 
 .clube-button:hover {
-    background: var(--success-green);
+    background: linear-gradient(135deg, var(--success-green), #45a049);
+    box-shadow: 0 0 15px var(--success-green);
+    transform: scale(1.05);
 }
 
 .chat-box {
@@ -128,14 +156,34 @@ header {
     border-radius: 10px;
     margin-bottom: 10px;
     font-size: 14px;
+    color: var(--light-text);
+    border: 1px solid var(--accent-orange);
+    box-shadow: 0 0 5px rgba(255, 165, 0, 0.3);
 }
 
-#chat-input, input, textarea, select {
+#chat-input,
+input,
+textarea,
+select {
     width: 100%;
     padding: 8px;
     border-radius: 10px;
     margin-bottom: 10px;
     font-size: 14px;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--light-text);
+    border: 1px solid var(--accent-orange);
+    box-shadow: 0 0 5px rgba(255, 165, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+#chat-input:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 10px var(--accent-orange);
+    outline: none;
 }
 
 .game-container {
@@ -143,12 +191,13 @@ header {
 }
 
 #burger-catch {
-    background: #222;
+    background: var(--dark-gray);
     border: 2px solid var(--accent-pink);
     border-radius: 10px;
     width: 100%;
     max-width: 300px;
     height: 300px;
+    box-shadow: 0 0 10px var(--accent-pink);
 }
 
 .memory-grid {
@@ -166,12 +215,22 @@ header {
     font-size: 18px;
     border-radius: 10px;
     cursor: pointer;
+    color: var(--light-text);
+    border: 1px solid var(--accent-orange);
+    box-shadow: 0 0 5px var(--accent-orange);
+    transition: all 0.3s;
+}
+
+.memory-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 10px var(--accent-orange);
 }
 
 #trivia-options label {
     display: block;
     margin: 5px 0;
     font-size: 14px;
+    color: var(--medium-text);
 }
 
 footer {
@@ -179,6 +238,10 @@ footer {
     padding: 20px;
     background: rgba(0, 0, 0, 0.9);
     font-size: 14px;
+    color: var(--light-text);
+    border-top: 2px solid var(--accent-orange);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5), 0 0 15px var(--accent-orange);
+    text-shadow: 0 0 5px var(--accent-orange);
 }
 
 @media (max-width: 600px) {
@@ -210,4 +273,3 @@ footer {
         font-size: 16px;
     }
 }
-```
