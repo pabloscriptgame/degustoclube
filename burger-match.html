@@ -1,0 +1,153 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DêGusto Clube - Burger Match</title>
+    <link rel="stylesheet" href="burger-match.css">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://i.ibb.co/dwtWsHQ6/favicon-32x32.png" type="image/png">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="https://i.ibb.co/gBM97H1/Background-Eraser-20250817-112249455.png" alt="DêGusto Logo" class="logo-image">
+                <h1>DêGusto Clube</h1>
+            </div>
+        </div>
+    </header>
+
+    <section id="clube" class="clube-section">
+        <h2>🃏 Burger Match</h2>
+        <p class="clube-description">Combine pares de ingredientes! (+10 DêCoins por par)</p>
+        <div class="game-container">
+            <div id="match-game" class="memory-grid"></div>
+            <p>Tempo: <span id="match-time">0s</span> | Pares: <span id="match-pairs">0</span></p>
+            <button class="clube-button" onclick="startBurgerMatch()">Jogar</button>
+        </div>
+        <div class="code-box">
+            <h3>Código Fonte</h3>
+            <button class="clube-button" onclick="copyCode()">Copiar Código</button>
+            <pre id="code-content">
+&lt;div id="match-game" class="memory-grid"&gt;&lt;/div&gt;
+&lt;p&gt;Tempo: &lt;span id="match-time"&gt;0s&lt;/span&gt; | Pares: &lt;span id="match-pairs"&gt;0&lt;/span&gt;&lt;/p&gt;
+&lt;button class="clube-button" onclick="startBurgerMatch()"&gt;Jogar&lt;/button&gt;
+
+&lt;script&gt;
+let matchCards = [];
+let selectedCards = [];
+let matchedPairs = 0;
+let matchStartTime = 0;
+
+function startBurgerMatch() {
+    matchedPairs = 0;
+    selectedCards = [];
+    matchStartTime = Date.now();
+    document.getElementById('match-pairs').textContent = matchedPairs;
+    document.getElementById('match-time').textContent = '0s';
+    
+    const emojis = ['🍔', '🍔', '🥓', '🥓', '🧀', '🧀', '🍟', '🍟'];
+    matchCards = emojis.sort(() => Math.random() - 0.5).map((emoji, i) => ({ id: i, emoji, flipped: false }));
+    
+    const grid = document.getElementById('match-game');
+    grid.innerHTML = matchCards.map(card => 
+        `&lt;div class="memory-card" data-id="${card.id}" onclick="flipCard(${card.id})"&gt;${card.flipped ? card.emoji : '?'}&lt;/div&gt;`
+    ).join('');
+    
+    updateMatchTime();
+}
+
+function flipCard(id) {
+    if (selectedCards.length < 2 && !matchCards[id].flipped) {
+        matchCards[id].flipped = true;
+        selectedCards.push(matchCards[id]);
+        document.querySelector(`.memory-card[data-id="${id}"]`).textContent = matchCards[id].emoji;
+        
+        if (selectedCards.length === 2) {
+            if (selectedCards[0].emoji === selectedCards[1].emoji) {
+                matchedPairs++;
+                document.getElementById('match-pairs').textContent = matchedPairs;
+                selectedCards = [];
+                earnDeCoins(10);
+                if (matchedPairs === matchCards.length / 2) {
+                    const timeTaken = Math.floor((Date.now() - matchStartTime) / 1000);
+                    alert('Você venceu! Tempo: ' + timeTaken + 's');
+                }
+            } else {
+                setTimeout(() => {
+                    selectedCards.forEach(card => {
+                        matchCards[card.id].flipped = false;
+                        document.querySelector(`.memory-card[data-id="${card.id}"]`).textContent = '?';
+                    });
+                    selectedCards = [];
+                }, 1000);
+            }
+        }
+    }
+}
+
+function updateMatchTime() {
+    if (matchedPairs < matchCards.length / 2) {
+        const time = Math.floor((Date.now() - matchStartTime) / 1000);
+        document.getElementById('match-time').textContent = time + 's';
+        setTimeout(updateMatchTime, 1000);
+    }
+}
+
+function earnDeCoins(amount) {
+    let balance = parseInt(localStorage.getItem('decoins')) || 0;
+    balance += amount;
+    localStorage.setItem('decoins', balance);
+}
+&lt;/script&gt;
+            </pre>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 DêGusto Clube — Diversão e Sabor! 🍔✨</p>
+    </footer>
+
+    <script src="burger-match.js"></script>
+</body>
+</html>

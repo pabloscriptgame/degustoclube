@@ -42,8 +42,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DêGusto Clube</title>
-    <link rel="stylesheet" href="style.css">
+    <title>DêGusto Clube - Burger Builder</title>
+    <link rel="stylesheet" href="burger-builder.css">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://i.ibb.co/dwtWsHQ6/favicon-32x32.png" type="image/png">
 </head>
@@ -58,31 +58,41 @@
     </header>
 
     <section id="clube" class="clube-section">
-        <h2>🎉 DêGusto Clube</h2>
-        <p class="clube-description">Crie seu perfil e divirta-se com jogos interativos!</p>
-
-        <div class="tabs">
-            <button class="tab-button active" data-tab="perfil">👤 Perfil</button>
-            <button class="tab-button" onclick="window.location.href='burger-catch.html'">🍔 Burger Catch</button>
-            <button class="tab-button" onclick="window.location.href='burger-trivia.html'">🧠 Burger Trivia</button>
-            <button class="tab-button" onclick="window.location.href='burger-match.html'">🃏 Burger Match</button>
-            <button class="tab-button" onclick="window.location.href='burger-builder.html'">🍔 Burger Builder</button>
+        <h2>🍔 Burger Builder</h2>
+        <p class="clube-description">Monte seu hambúrguer! (+10 DêCoins por criação)</p>
+        <div class="game-container">
+            <select id="bun"><option>Pão Artesanal</option><option>Pão Premium</option></select>
+            <select id="patty"><option>Hambúrguer de Picanha</option><option>Steak de Frango</option></select>
+            <select id="toppings"><option>Bacon</option><option>Cheddar</option><option>Milho</option></select>
+            <button class="clube-button" onclick="buildBurger()">Montar</button>
+            <p id="burger-result"></p>
         </div>
+        <div class="code-box">
+            <h3>Código Fonte</h3>
+            <button class="clube-button" onclick="copyCode()">Copiar Código</button>
+            <pre id="code-content">
+&lt;select id="bun"&gt;&lt;option&gt;Pão Artesanal&lt;/option&gt;&lt;option&gt;Pão Premium&lt;/option&gt;&lt;/select&gt;
+&lt;select id="patty"&gt;&lt;option&gt;Hambúrguer de Picanha&lt;/option&gt;&lt;option&gt;Steak de Frango&lt;/option&gt;&lt;/select&gt;
+&lt;select id="toppings"&gt;&lt;option&gt;Bacon&lt;/option&gt;&lt;option&gt;Cheddar&lt;/option&gt;&lt;option&gt;Milho&lt;/option&gt;&lt;/select&gt;
+&lt;button class="clube-button" onclick="buildBurger()"&gt;Montar&lt;/button&gt;
+&lt;p id="burger-result"&gt;&lt;/p&gt;
 
-        <div id="perfil" class="tab-panel active">
-            <h3>👤 Crie Seu Perfil</h3>
-            <form id="register-form">
-                <input type="text" id="username" placeholder="Ex: BurgerMaster" required>
-                <input type="password" id="password" placeholder="Senha simples" required>
-                <button type="button" class="clube-button" onclick="registerUser()">Registrar</button>
-            </form>
-            <form id="login-form" style="display:none;">
-                <input type="text" id="login-username" placeholder="Nome de usuário" required>
-                <input type="password" id="login-password" placeholder="Senha" required>
-                <button type="button" class="clube-button" onclick="loginUser()">Entrar</button>
-            </form>
-            <p id="user-status">Status: Não logado. Registre-se!</p>
-            <p>Seu saldo: <span id="decoins-balance">0</span> DêCoins</p>
+&lt;script&gt;
+function buildBurger() {
+    const bun = document.getElementById('bun').value;
+    const patty = document.getElementById('patty').value;
+    const toppings = document.getElementById('toppings').value;
+    document.getElementById('burger-result').textContent = `Seu burger: ${bun} com ${patty} e ${toppings}!`;
+    earnDeCoins(10);
+}
+
+function earnDeCoins(amount) {
+    let balance = parseInt(localStorage.getItem('decoins')) || 0;
+    balance += amount;
+    localStorage.setItem('decoins', balance);
+}
+&lt;/script&gt;
+            </pre>
         </div>
     </section>
 
@@ -90,6 +100,6 @@
         <p>© 2025 DêGusto Clube — Diversão e Sabor! 🍔✨</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="burger-builder.js"></script>
 </body>
 </html>
