@@ -1,0 +1,213 @@
+```css
+:root {
+    --primary-black: #111111;
+    --accent-pink: #ff007a;
+    --accent-orange: #ff6b00;
+    --success-green: #00cc00;
+    --medium-text: #cccccc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Baloo 2', cursive;
+}
+
+body {
+    background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+    color: var(--medium-text);
+}
+
+header {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.logo h1 {
+    font-size: 24px;
+    color: var(--accent-pink);
+}
+
+.clube-section {
+    padding: 40px 10px;
+    text-align: center;
+}
+
+.clube-section h2 {
+    font-size: 28px;
+    color: var(--accent-pink);
+    margin-bottom: 20px;
+}
+
+.clube-description {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--accent-pink);
+    color: var(--medium-text);
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.tab-button.active, .tab-button:hover {
+    background: var(--accent-pink);
+    color: #fff;
+}
+
+.tab-panel {
+    display: none;
+    background: rgba(17, 17, 17, 0.8);
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 2px solid var(--accent-pink);
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+.clube-button {
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-orange));
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.clube-button:hover {
+    background: var(--success-green);
+}
+
+.chat-box {
+    height: 200px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+#chat-input, input, textarea, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.game-container {
+    margin: 20px 0;
+}
+
+#burger-catch {
+    background: #222;
+    border: 2px solid var(--accent-pink);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+}
+
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    max-width: 280px;
+    margin: 0 auto 20px;
+}
+
+.memory-card {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 8px;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#trivia-options label {
+    display: block;
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .tabs {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .tab-button {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .tab-panel {
+        padding: 15px;
+    }
+
+    .game-container canvas {
+        width: 100%;
+        height: 280px;
+    }
+
+    .memory-grid {
+        max-width: 260px;
+    }
+
+    .memory-card {
+        padding: 6px;
+        font-size: 16px;
+    }
+}
+```

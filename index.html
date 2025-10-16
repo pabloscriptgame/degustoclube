@@ -1,0 +1,140 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DêGusto Clube</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://i.ibb.co/dwtWsHQ6/favicon-32x32.png" type="image/png">
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="https://i.ibb.co/gBM97H1/Background-Eraser-20250817-112249455.png" alt="DêGusto Logo" class="logo-image">
+                <h1>DêGusto Clube</h1>
+            </div>
+        </div>
+    </header>
+
+    <section id="clube" class="clube-section">
+        <h2>🎉 DêGusto Clube</h2>
+        <p class="clube-description">Entre, converse no chat e divirta-se com jogos interativos! Crie seu perfil para começar.</p>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="perfil">👤 Perfil</button>
+            <button class="tab-button" data-tab="chat">💬 Chat</button>
+            <button class="tab-button" data-tab="jogos">🎮 Jogos</button>
+        </div>
+
+        <div id="perfil" class="tab-panel active">
+            <h3>👤 Crie Seu Perfil</h3>
+            <form id="register-form">
+                <input type="text" id="username" placeholder="Ex: BurgerMaster" required>
+                <input type="password" id="password" placeholder="Senha simples" required>
+                <button type="button" class="clube-button" onclick="registerUser()">Registrar</button>
+            </form>
+            <form id="login-form" style="display:none;">
+                <input type="text" id="login-username" placeholder="Nome de usuário" required>
+                <input type="password" id="login-password" placeholder="Senha" required>
+                <button type="button" class="clube-button" onclick="loginUser()">Entrar</button>
+            </form>
+            <p id="user-status">Status: Não logado. Registre-se!</p>
+            <p>Seu saldo: <span id="decoins-balance">0</span> DêCoins</p>
+        </div>
+
+        <div id="chat" class="tab-panel">
+            <h3>💬 Chat Online</h3>
+            <p>Converse com outros fãs de hambúrgueres! (+5 DêCoins por mensagem)</p>
+            <div id="chat-messages" class="chat-box"></div>
+            <input type="text" id="chat-input" placeholder="Digite sua mensagem...">
+            <button class="clube-button" onclick="sendMessage()">Enviar</button>
+        </div>
+
+        <div id="jogos" class="tab-panel">
+            <h3>🎮 Jogos Interativos</h3>
+            <div class="game-container">
+                <h4>🍔 Burger Catch</h4>
+                <p>Pegue ingredientes e evite bombas! Use ← → ou toque nas laterais da tela. (+50 DêCoins se pontuação 500+)</p>
+                <canvas id="burger-catch" width="300" height="300"></canvas>
+                <p>Score: <span id="catch-score">0</span></p>
+                <button class="clube-button" onclick="startBurgerCatch()">Jogar</button>
+            </div>
+            <div class="game-container">
+                <h4>🧠 Burger Trivia</h4>
+                <p>Teste seus conhecimentos! (+5 DêCoins por acerto)</p>
+                <div id="trivia-question"></div>
+                <div id="trivia-options"></div>
+                <p>Score: <span id="trivia-score">0</span></p>
+                <button class="clube-button" onclick="startTrivia()">Jogar</button>
+            </div>
+            <div class="game-container">
+                <h4>🃏 Burger Match</h4>
+                <p>Combine pares de ingredientes! (+10 DêCoins por par)</p>
+                <div id="match-game" class="memory-grid"></div>
+                <p>Tempo: <span id="match-time">0s</span> | Pares: <span id="match-pairs">0</span></p>
+                <button class="clube-button" onclick="startBurgerMatch()">Jogar</button>
+            </div>
+            <div class="game-container">
+                <h4>🍔 Burger Builder</h4>
+                <p>Monte seu hambúrguer! (+10 DêCoins por criação)</p>
+                <select id="bun"><option>Pão Artesanal</option><option>Pão Premium</option></select>
+                <select id="patty"><option>Hambúrguer de Picanha</option><option>Steak de Frango</option></select>
+                <select id="toppings"><option>Bacon</option><option>Cheddar</option><option>Milho</option></select>
+                <button class="clube-button" onclick="buildBurger()">Montar</button>
+                <p id="burger-result"></p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 DêGusto Clube — Diversão e Sabor! 🍔✨</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
